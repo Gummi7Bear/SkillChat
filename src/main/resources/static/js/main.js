@@ -1,4 +1,5 @@
 $(function(){
+    var userName = 'Юзер';
 
     let initChat = function() {
         loadUsers();
@@ -33,6 +34,7 @@ $(function(){
 
     let authUser = function() {
         let name = prompt('Введите имя пользователя:');
+        userName = name;
         $.post('/api/users', {'name': name}, function(response){
             if(response.result) {
                 initChat();
@@ -45,6 +47,7 @@ $(function(){
     let checkAuthStatus = function() {
         $.get('/api/auth', function(response){
             if(response.result) {
+                userName = response.name;
                 initChat();
             } else {
                 authUser();
@@ -53,4 +56,15 @@ $(function(){
     };
 
     checkAuthStatus();
+
+    $('.send-message').on('click', function (){
+          let message = $('.message-text').val();
+          $.post('/api/message'), {'text': message}, function (responce){
+              if(responce.result) {
+                  $('.message-text').val('');
+              } else {
+                  alert('Что-то пошло не так :(');
+              }
+          }
+    });
 });

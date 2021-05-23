@@ -81,6 +81,23 @@ public class ChatController {
         return response;
     }
 
+    @PostMapping(path = "/api/messages")
+    public HashMap<String, Boolean> sendMessages(HttpServletRequest request) {
+        String mess = request.getParameter("text");
+        String sessionId = getSessionId();
+        User user = userRepository.getBySessionId(sessionId);
+        Message message = new Message();
+        message.setMessage(mess);
+        message.setSendTime(new Date());
+        message.setUser(user.getId());
+        messageRepository.save(message);
+
+        HashMap<String, Boolean> response = new HashMap<>();
+        response.put("result", true);
+        return response;
+
+    }
+
 
     private String getSessionId(){
         return RequestContextHolder.currentRequestAttributes().getSessionId();
