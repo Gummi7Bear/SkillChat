@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class ChatController {
@@ -48,6 +50,20 @@ public class ChatController {
         response.put("result", true);
         return response;
     }
+
+    /**
+     * Получение списка пользователей
+     * @return возвращает список всех пользователей
+     */
+    @GetMapping(path = "/api/users")
+    public HashMap<String, List<User>> getUsers() {
+
+        List<User> userList = (List<User>) userRepository.findAll();
+        HashMap<String, List<User>> response = new HashMap<>();
+        response.put("users", userList);
+        return response;
+    }
+
 
     private String getSessionId(){
         return RequestContextHolder.currentRequestAttributes().getSessionId();

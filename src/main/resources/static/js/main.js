@@ -4,6 +4,7 @@ $(function(){
         //load messages
         //load users
         alert('YES');
+        loadUsers();
     };
 
     let loadUsers = function() {
