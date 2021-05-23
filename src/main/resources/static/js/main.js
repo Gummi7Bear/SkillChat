@@ -1,10 +1,8 @@
 $(function(){
 
     let initChat = function() {
-        //load messages
-        //load users
-        alert('YES');
         loadUsers();
+        loadMessages();
     };
 
     let loadUsers = function() {
@@ -18,6 +16,20 @@ $(function(){
             }
         });
     };
+
+    let loadMessages = function(){
+        $.get('/api/messages', function (response){
+            let messages = response.messages;
+            let messagesList = $('.messages-list');
+            for(let i in messages) {
+                let messageItem = $('<div class="message"><b>' +
+                    messages[i].time + "&nbsp;" +
+                    messages[i].name +
+                    '</b> ' + messages[i].text + '</div>');
+                messagesList.append(messageItem);
+            }
+        })
+    }
 
     let authUser = function() {
         let name = prompt('Введите имя пользователя:');

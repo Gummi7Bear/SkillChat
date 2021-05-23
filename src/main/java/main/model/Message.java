@@ -1,9 +1,6 @@
 package main.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -13,7 +10,12 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private Date sendTime;
+
+    @Column(columnDefinition="TEXT")
     private String message;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private int userId;
 
     public int getId() {

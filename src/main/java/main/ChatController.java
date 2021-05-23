@@ -1,6 +1,8 @@
 package main;
 
+import main.model.Message;
 import main.model.User;
+import main.repos.MessageRepository;
 import main.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,8 @@ import java.util.List;
 public class ChatController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private MessageRepository messageRepository;
 
     /**
      * Получение статуса авторизации
@@ -61,6 +65,19 @@ public class ChatController {
         List<User> userList = (List<User>) userRepository.findAll();
         HashMap<String, List<User>> response = new HashMap<>();
         response.put("users", userList);
+        return response;
+    }
+
+    /**
+     * Получение списка сообщений
+     * @return возвращает список всех сообщений
+     */
+    @GetMapping(path = "/api/messages")
+    public HashMap<String, List<Message>> getMessages() {
+
+        List<Message> messageList = (List<Message>) messageRepository.findAll();
+        HashMap<String, List<Message>> response = new HashMap<>();
+        response.put("messages", messageList);
         return response;
     }
 
