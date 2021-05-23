@@ -6,6 +6,18 @@ $(function(){
         alert('YES');
     };
 
+    let loadUsers = function() {
+        $.get('/api/users', function(response){
+            let users = response.users;
+            let usersList = $('.users-list');
+            for(let i in users) {
+                let userItem = $('<div class="user-item"></div>');
+                userItem.text(users[i].name);
+                usersList.append(userItem);
+            }
+        });
+    };
+
     let authUser = function() {
         let name = prompt('Введите имя пользователя:');
         $.post('/api/users', {'name': name}, function(response){
