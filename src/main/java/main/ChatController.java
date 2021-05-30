@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
+import response.AddMessageResponce;
+import response.AuthResponse;
+import response.MessageResponse;
+
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,16 +27,19 @@ public class ChatController {
     @Autowired
     private MessageRepository messageRepository;
 
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
+
     /**
      * Получение статуса авторизации
      * @return возвращает результат true or false
      */
     @GetMapping(path = "/api/auth")
-    public HashMap<String, Boolean> auth() {
-        HashMap<String, Boolean> response = new HashMap<>();
+    public AuthResponse auth() {
+        AuthResponse response = new AuthResponse();
         String sessionId = getSessionId();
         User user = userRepository.getBySessionId(sessionId);
-        response.put("result", user != null);
+        response.setResult(user != null);
+        if(user != null) response.setName(user.getName());
         return response;
     }
 
@@ -73,27 +81,43 @@ public class ChatController {
      * @return возвращает список всех сообщений
      */
     @GetMapping(path = "/api/messages")
-    public HashMap<String, List<Message>> getMessages() {
+    public HashMap<String, List> getMessages() {
+        ArrayList<MessageResponse> messagesList =
+                new ArrayList<>();
+        Iterable<Message> messages = messageRepository.findAll();
+        for(Message message : messages) {
+            MessageResponse messageItem = new MessageResponse();
+            messageItem.setName(message.getUser().getName());
+            messageItem.setTime(
+                    formatter.format(message.getSendTime())
+            );
+            messageItem.setText(message.getMessage());
+            messagesList.add(messageItem);
+        }
 
-        List<Message> messageList = (List<Message>) messageRepository.findAll();
-        HashMap<String, List<Message>> response = new HashMap<>();
-        response.put("messages", messageList);
+        HashMap<String, List> response = new HashMap<>();
+        response.put("messages", messagesList);
         return response;
     }
 
+
     @PostMapping(path = "/api/messages")
-    public HashMap<String, Boolean> sendMessages(HttpServletRequest request) {
+    public AddMessageResponce sendMessages(HttpServletRequest request) {
         String mess = request.getParameter("text");
         String sessionId = getSessionId();
         User user = userRepository.getBySessionId(sessionId);
+
+        Date date = new Date();
+
         Message message = new Message();
         message.setMessage(mess);
         message.setSendTime(new Date());
-        message.setUser(user.getId());
+        message.setUser(user);
         messageRepository.save(message);
 
-        HashMap<String, Boolean> response = new HashMap<>();
-        response.put("result", true);
+        AddMessageResponce response = new AddMessageResponce();
+        response.setResult(true);
+        response.setTime(formatter.format(date));
         return response;
 
     }

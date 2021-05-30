@@ -1,8 +1,11 @@
 package response;
 
-public class AuthResponse {
+import java.util.Date;
+
+public class AddMessageResponce {
     private boolean result;
-    private String name;
+    private String time;
+
 
     public boolean isResult() {
         return result;
@@ -12,11 +15,12 @@ public class AuthResponse {
         this.result = result;
     }
 
-    public String getName() {
-        return name;
+    public String getTime() {
+        return time;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTime(String time) {
+        this.time = time;
     }
+
 }

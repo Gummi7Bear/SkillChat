@@ -18,10 +18,10 @@ $(function(){
         });
     };
 
-    let loadMessages = function(){
-        $.get('/api/messages', function (response){
+    let loadMessages = function() {
+        let messagesList = $('.messages-list');
+        $.get('/api/messages', function(response) {
             let messages = response.messages;
-            let messagesList = $('.messages-list');
             for(let i in messages) {
                 let messageItem = $('<div class="message"><b>' +
                     messages[i].time + "&nbsp;" +
@@ -29,8 +29,8 @@ $(function(){
                     '</b> ' + messages[i].text + '</div>');
                 messagesList.append(messageItem);
             }
-        })
-    }
+        });
+    };
 
     let authUser = function() {
         let name = prompt('Введите имя пользователя:');
@@ -57,14 +57,19 @@ $(function(){
 
     checkAuthStatus();
 
-    $('.send-message').on('click', function (){
-          let message = $('.message-text').val();
-          $.post('/api/message'), {'text': message}, function (responce){
-              if(responce.result) {
-                  $('.message-text').val('');
-              } else {
-                  alert('Что-то пошло не так :(');
-              }
-          }
+    $('.send-message').on('click', function(){
+        let message = $('.message-text').val();
+        let messagesList = $('.messages-list');
+        $.post('/api/messages', {'text': message}, function(response){
+            if(response.result) {
+                let messageItem = $('<div class="message"><b>' +
+                    response.time + "&nbsp;" + userName +
+                    '</b> ' + message + '</div>');
+                messagesList.append(messageItem);
+                $('.message-text').val('');
+            } else {
+                alert('Что-то пошлло не так :(');
+            }
+        });
     });
 });

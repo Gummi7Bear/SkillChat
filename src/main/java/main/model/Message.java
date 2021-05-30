@@ -9,6 +9,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     private Date sendTime;
 
     @Column(columnDefinition="TEXT")
@@ -16,7 +17,7 @@ public class Message {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private int userId;
+    private User userId;
 
     public int getId() {
         return id;
@@ -42,11 +43,11 @@ public class Message {
         this.message = message;
     }
 
-    public int getUser() {
+    public User getUser() {
         return userId;
     }
 
-    public void setUser(int user) {
+    public void setUser(User user) {
         this.userId = user;
     }
 }
